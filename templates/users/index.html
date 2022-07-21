@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content  %}
+<div>
+  
+  <div>
+    <table class="table table-responsive table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">College</th>
+          <th scope="col">ID</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+          
+          {% for teacher in teachers %}
+          <tr>
+              <td>{{teacher.name}}</td>
+              <td>{{teacher.email}}</td>
+              <td>{{teacher.getCollege}}</td>
+              <td>{{teacher.id}}</td>
+            </tr>
+          {% endfor %}
+              
+        
+        
+      </tbody>
+    </table>
+  </div>
+  <div>
+    Welcome to College Managment
+  </div>
+    
+    
+</div>
+{% endblock %}
