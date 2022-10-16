@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/app.css'  %}" />
+     <!-- icons -->
+     <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/app.css'  %}" />
+   
     <link rel="stylesheet" href="{% static 'uikit/styles/uikit.css'  %}" />
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     <title>COLLEGE MANAGEMENT SYSTEM</title>
 </head>
 <body>
-    <div class="container-fluid">
-        {% include 'partials/_navbar.html' %}
-        {% include 'partials/_messages.html' %}
+    {% include 'partials/_navbar.html' %}
+    {% include 'partials/_messages.html' %}    <div class="container-fluid">
+        
         
         {% block content %}
             
@@ -20,5 +24,8 @@
     </div>
     
     <script src="{% static 'uikit/app.js' %}"></script>        
+    <script src="{% static 'css/bootstrap/vendor/jquery/jquery.min.js' %}"></script>  
+    <script src="{% static 'css/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    
 </body>
 </html>

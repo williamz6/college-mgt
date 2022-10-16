@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <div class="container">
+        <p style="color: #322F41; font-weight: bold;">logged in as  {{request.user.username}} </p>
+            <div class="card">
+              <div class="card-body table-responsive">
+                <table class="table  table-bordered">
+                  <thead>
+                    <tr style="text-align: center;">
+                      <th scope="col">Name</th>
+                      <th scope="col">Status</th>
+                      <th></th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                      
+                      {% for m in m_list  %}
+                      
+                      <tr>
+                          
+                          <td> {{m.name}}</td>
+
+                          
+                          {% if not m.status %}
+                            <td>Not Marked</td>
+                            <td> <input type="button" value="Enter Marks"></td>
+                            {% else %}
+                            <td>Marked</td>
+                            <td> <input type="button" value="Edit Marks"></td>
+                          {% endif %}
+                            
+                          
+                        </tr>
+                        {% empty %}
+                        <p>Student has no course</p>
+                      {% endfor %}               
+                    
+                  </tbody>
+                </table>                
+                 
+              </div>
+            </div>
+            
+           
+                
+        </div>
+    </main>
+{% endblock  %}
+    

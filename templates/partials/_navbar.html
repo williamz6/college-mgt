@@ -1,8 +1,17 @@
 {% load static %}
     <!-- Header Section -->
     <header class="header">
+      
       <div class="container container--narrow">
-        <a class="navbar-brand" href="/"><span style="font-weight: bold ; color:white ;">CMGT</span></a>
+        <a class="navbar-brand" href="/">
+          <div>
+            <div class="row">
+              <div class="col-md-6 text-center" style="font-weight: bold ; color:white ;">SOP</div>
+              <div class="col-md-6" style="font-weight: bold ; color:white ;">School Of The People</div>
+            </div>
+          </div>
+          <!-- <span style="font-weight: bold ; color:white ;">SOP</span> -->
+        </a>
         <nav class="header__nav">
           <input type="checkbox" id="responsive-menu" />
           <label for="responsive-menu" class="toggle-menu">
@@ -11,18 +20,22 @@
           </label>
           <ul class="header__menu">
             
-            
-
-            
-            {% if request.user.is_authenticated  %}    
-            
-            
-            <li class="header__menuItem"><a href="{% url 'profile' %}" class="btn btn--sub">Profile</a></li>
-            <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Logout</a></li>
+            {% if user.is_authenticated %}
+              
+              {% if user.is_teacher %}
+              <li class="header__menuItem"><a href="{% url 'profile' %}" class="btn btn--sub">Teacher Page</a></li>
+              <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Logout</a></li>
+              {% else %}
+              <li class="header__menuItem"><a href="{% url 'index' %}" class="btn btn--sub">About us</a></li>
+              <li class="header__menuItem"><a href="{% url 'index' %}" class="btn btn--sub">Colleges & Department</a></li>
+              <li class="header__menuItem"><a href="{% url 'index' %}" class="btn btn--sub">Alumni</a></li>
+              <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Logout</a></li>
+              {% endif %}
+              
             {% else %}
-            <li class="header__menuItem"><a href="{% url 'register-teacher' %}">Teacher</a></li>
-            <li class="header__menuItem"><a href="{% url 'register-student' %}">Student</a></li>
+            
             <li class="header__menuItem"><a href="{% url 'login' %}" class="btn btn--sub">Login</a></li>
+            
             {% endif %}
           </ul>
         </nav>

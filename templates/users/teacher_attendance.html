@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="card table-responsive">
+                <div class="card-header font-weight-bold">
+                </div>
+                
+                {% if attendance_c.student_set.all %}
+                <div class="card-body">
+                    <form action="{% url 'confirm' attendanceclass.id   %}" method="post">
+                        {% csrf_token %}
+                    <table class="table table-bordered ">
+                        <thead>
+                          <tr>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Action</th>
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for student in attendance_c.student_set.all  %}
+                            
+                            <tr>
+                                <td>{{student.name}}</td>
+                                
+                                <td>
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            
+                                                <label class="btn btn-outline-success active" >
+                                                <input type="radio" name="{{ student.SID }}" id="option1" autocomplete="off" value="present" checked>
+                                                Present</label>
+            
+                                                <label class="btn btn-outline-danger"> 
+                                                <input type="radio" name="{{ student.SID }}" id="option2" autocomplete="off" value="absent">
+                                                 Absent
+                                            </label>
+                                    </div>
+                                </td>
+                                
+                                
+                            </tr>
+                            {% endfor %}               
+                          
+                        </tbody>
+                      </table>
+
+                      <div>
+                        <input class="btn btn--sub" type="submit" value="Submit">
+                      </div>
+                    </form>
+                </div>
+                
+                {% else %}
+                <div class="card-body">
+                    <p>No student in class</p>
+                </div>
+                {% endif %}
+                
+            </div>
+            
+        </div>
+    </section>
+{% endblock %}
+    

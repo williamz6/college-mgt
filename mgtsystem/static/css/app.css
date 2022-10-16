@@ -1,5 +1,5 @@
 :root {
-  --color-sub: #2d2d39;
+  --color-sub: #322F41;
 }
 
 .btn--sub {
@@ -97,7 +97,11 @@ img {
     width: 5rem;
     height: 5rem;
     border-radius: 50%;
-  }
+    -webkit-border-radius:;
+    -moz-border-radius:;
+    -ms-border-radius:;
+    -o-border-radius:;
+}
 
   .toggle-menu__lines,
   .toggle-menu__lines::before,
@@ -174,6 +178,15 @@ img {
   display: flex;
   align-items: center;
   background-color: var(--color-sub);
+}
+.index__bg{
+  height:80vh;
+  width: 100%;
+  background-image:url(../images/school.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center top;
 }
 
 .hero-section__box {

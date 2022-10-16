@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+    
+    {% if class_obj.student_set.all %}
+       <section>
+        <div class="container">
+            <div class="card table-responsive">
+                <div class="card-header font-weight-bold">Extra Class</div>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'e_confirm'  ass.id %}" method="post">
+                    <div class="extra_class">
+                        <label for="date">Enter date:</label>
+                        <input type="date" name="date">
+                    </div>
+                    {% csrf_token %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for student in class_obj.student_set.all %}
+                                <tr>
+                                    <td>{{student.name}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                
+                                                    <label class="btn btn-outline-success active" >
+                                                    <input type="radio" name="{{ student.SID }}" id="option1" autocomplete="off" value="present" checked>
+                                                    Present</label>
+                
+                                                    <label class="btn btn-outline-danger"> 
+                                                    <input type="radio" name="{{ student.SID }}" id="option2" autocomplete="off" value="absent">
+                                                     Absent
+                                                </label>
+                                        </div>
+                                    </td>
+                                </tr> 
+                            {% endfor %}
+                                
+                        </tbody>
+                    </table>
+                    <div>
+                        <input type="submit" class="btn btn--sub" value="Submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+       </section> 
+    {% else %}
+    <div class="card-body">
+        <p>No student in class</p>
+    </div>
+    {% endif %}
+        
+{% endblock %}

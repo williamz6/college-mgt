@@ -40,4 +40,4 @@ class Class(models.Model):
         verbose_name_plural = 'classes'
    
     def __str__(self):
-        return self.name
+        return f'{self.name}:{self.dept}'

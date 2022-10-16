@@ -76,7 +76,7 @@ class StudentSignUpForm(UserCreationForm):
     sex = forms.ChoiceField(choices=SEX_TYPE)
     DOB = forms.DateField(initial=datetime.date.today, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
     class_id = forms.ModelChoiceField(queryset=Class.objects.all())
-    
+   
     class Meta(UserCreationForm.Meta):
         model = User
         fields= ['name', 'username', 'sex', 'DOB', 'class_id']
@@ -104,7 +104,8 @@ class StudentSignUpForm(UserCreationForm):
         student = Student.objects.create(
             user=user,
             name=self.cleaned_data.get('name'),
-            DOB=self.cleaned_data.get('DOB'),
+            sex=self.cleaned_data.get('sex'),
+            DOB=self.cleaned_data.get('DOB'),            
             class_id=self.cleaned_data.get('class_id')
         )
         return user

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <div class="container">
+        <p style="color: #322F41; font-weight: bold;">logged in as  {{request.user.username}} </p>
+            <div class="card">
+              <div class="card-body table-responsive">
+                <table class="table  table-bordered">
+                  <thead>
+                    <tr style="text-align: center;">
+                      <th scope="col">Class</th>
+                      <th scope="col">Course</th>
+                      <th scope="col">Action</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                      
+                      {% for ass in teacher_obj.assign_set.all  %}
+                      
+                      <tr>
+                          <td>{{ass.class_id}}</td>
+                          <td>{{ass.course}}</td>
+                          
+                          <td style="display: flex; justify-content: space-evenly;">
+                            {% if choice == 1 %}
+                                  <a class="btn btn--sm" href="{% url 'teacherClass_date' ass.id %}" role="button">Enter Attendance</a>
+                                  <a class="btn btn--sm" href="{% url 'extra_class' ass.id %}">Extra Class</a>
+                                  <a class="btn btn--sm" href="{% url 'teacher_student' ass.id %}">View Students</a>
+  
+                              {% elif choice == 2 %}
+                                  <a class="btn btn--sm" href="{% url 'teacher_marks_list' ass.id %}" role="button">Enter Marks</a>
+                                  <a class="btn btn--sm" href="{% url 'register-teacher' %}">View Students</a>
+                              {% elif choice == 3 %}
+                                  <a class="btn btn--sm" href="{% url 'register-teacher' %}">Generate reports</a>
+                              {% endif %}
+                          </td>
+                        </tr>
+                        {% empty %}
+                        <p>teacher has not been assigned a course</p>
+                      {% endfor %}               
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+           
+                
+        </div>
+    </main>
+{% endblock  %}
+    

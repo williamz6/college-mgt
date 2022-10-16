@@ -1,46 +1,45 @@
 {% extends 'base.html' %}
 {% load static %} 
 {% block content %}
-
-<div class="auth">
-  <div class="card">
-    <div class="auth__header text-center">
-      <a href="/">
-        <img src="{% static 'images/icon.svg' %}" alt="icon" />
-      </a>
-      <h3>Student Account</h3>
-      <p>Register an account</p>
-    </div>
-
-    <form  method="post" class="form auth__form">
-        {% csrf_token %}
-        
-        {% for field in form %}
-        <div class="form__field">
-          <label for="formInput#text">{{field.label}}</label>
-          {{field}}
-
-          
-          <!-- {% if field.help_text %}
-            <small>{{field.help_text}}</small>
-          {% endif %} -->
-            
-          {% for error in field.errors %}
-              <p style="color: red;"> {{error}} </p>
-           {% endfor %}
-              
+    <div class="auth" style="margin-top: 20em;">
+      <div class="card">
+        <div class="auth__header text-center">
+          <a href="/">
+            <img src="{% static 'images/icon.svg' %}" alt="icon" />
+          </a>
+          <h3>Student Account</h3>
+          <p>Register an account</p>
         </div>
-        {% endfor %}
-      <div class="auth__actions">
-        <input class="btn btn--sub btn--lg" type="submit" value="Sign Up" />
+    
+        <form action=""  method="post" class="form auth__form">
+          {% csrf_token %}
+                  
+          {% for field in form %}
+          <div class="form__field">
+            <label for="formInput#text">{{field.label}}</label>
+            {{field}}
+
+            
+            <!-- {% if field.help_text %}
+              <small>{{field.help_text}}</small>
+            {% endif %} -->
+              
+            {% for error in field.errors %}
+                <p style="color: red;"> {{error}} </p>
+             {% endfor %}
+                
+          </div>
+          {% endfor %}
+          <div class="auth__actions">
+            <input class="btn btn--sub btn--lg" type="submit" value="Sign Up" />
+          </div>
+        </form>
+        <div class="auth__alternative">
+          <p>Already have an Account?</p>
+          <a href="{% url 'login' %}">Log In</a>
+        </div>
       </div>
-    </form>
-    <div class="auth__alternative">
-      <p>Already have an Account?</p>
-      <a href="{% url 'login' %}">Log In</a>
-    </div>
   </div>
-</div>
 <style>
   input.input[type='text'],input.input[type='email'], input.input[type='date'], input.input[type='password'], input.input[type='number'], select.input, textarea.input {
   min-width: 24rem;

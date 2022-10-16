@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <main>
+        <div class="container">
+        <p style="color: #322F41; font-weight: bold;">logged in as  {{request.user.username}} </p>
+            <div class="card">
+              <div class="card-body table-responsive">
+                <table class="table  table-bordered">
+                  <thead>
+                    <tr style="text-align: center;">
+                      <th scope="col">SID</th>
+                      <th scope="col">Student name</th>
+                      <th scope="col">Attended classes</th>
+                      <th scope="col">Total classes</th>
+                      <th scope="col">Attendance %</th>
+                      <th scope="col">Classes to attend </th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                      
+                      {% for a in att_list  %}
+                      
+                      <tr>
+                          <td>{{ a.student.SID }}</td>
+                          <td><a href="{% url 'teacher_attendance_detail' a.student.SID a.course_id %}"> {{a.student.name}}</a></td>
+                         
+                          <td>{{a.attendance_class}}</td>
+                          <td>{{a.total_class}}</td>
+                          
+                          {% if a.attendance < 75 %}
+                          <td class="bg-danger text-white">{{a.attendance}}</td>
+                          {% else %}
+                          <td class="bg-success text-white">{{a.attendance}}</td>
+                          {% endif %}
+                            
+                          
+                          <td>{{a.classes_to_attend}}</td>
+                          
+                          
+                        </tr>
+                        {% empty %}
+                        <p>No student for this class</p>
+                      {% endfor %}               
+                    
+                  </tbody>
+                </table>                
+                  <a href="{% url 'teacher_class' assign.teacher.staff_no 1 %}" class="btn btn--sub">Back</a>
+
+              </div>
+            </div>
+            
+           
+                
+        </div>
+    </main>
+{% endblock  %}
+    

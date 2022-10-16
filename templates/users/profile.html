@@ -1,4 +1,59 @@
 {% extends 'base.html' %}
 {% block content  %}
-   <p><strong> LOGGED IN AS {{user.username}}</strong></p>
+<main>
+   <section>
+      <div class="container">
+         
+         <div class="row" style="display: flex; flex-direction: row; flex-flow: row; justify-content: space-evenly;">
+
+            <div class="col-md-3">
+               <div class="card">
+                  <a role="button" href="{% url 'teacher_class' request.user.teacher.staff_no 1 %}">
+                     <div class="card-body">
+                         Enter Attendance
+                     </div>
+                  </a>
+                  
+                  
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="card">
+                  <a role="button" href="{% url 'teacher_class' request.user.teacher.staff_no 2 %}">
+                     <div class="card-body">
+                         Add Marks
+                     </div>
+                  </a>
+                  
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="card">
+                  <div class="card-body">
+                     add timetable
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="card">
+                  <div class="card-body">
+                     add reports
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+   </section>
+</main>
+   <!-- <p><strong> LOGGED IN AS {{user.username}} </strong></p>
+   
+   {% if user.is_teacher %}
+      <p>you are a teacher</p>
+   {% elif user.is_student %}
+   <p>you are a student</p>
+   {% else %}
+   <p>You are admin</p>
+   {% endif %} -->
+      
 {% endblock %}

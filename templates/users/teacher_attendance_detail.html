@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="card table-responsive">
+            <div class="card-header font-weight-bold">
+                <p>Attendance for <b>{{stud.name}}</b></p>
+            </div>
+            
+            
+            <div class="card-body">
+                <table class="table table-bordered ">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Day</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in att_list  %}
+                        
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            
+                            <td>{{a.date}}</td>
+                            <td>{{a.date | date:"l"}}</td>
+                            
+                            {% if a.status %}
+                            <td class="bg-success text-white">{{a.status}}</td>
+                            {% else %}
+                            <td class="bg-danger text-white">{{a.status}}</td>
+                            {% endif %}
+                            <td><a href="{% url 'change_att' a.id   %}" class="btn btn--sub">Change</a></td>
+                            
+                                   
+                            
+                        </tr>
+                        {% endfor %}       
+                        
+                        
+                            
+                        
+                    </tbody>
+                    
+                  </table>
+                  {% for c in course.assign_set.all %}
+                        <a href="{% url 'teacher_student' c.id %}" class="btn btn--sub">Back</a>
+                    {% endfor %}
+
+            </div>
+            
+            
+        </div>
+        
+    </div>
+</section>
+{% endblock content %}
+    

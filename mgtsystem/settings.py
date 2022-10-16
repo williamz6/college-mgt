@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'fontawesomefree',
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -116,7 +117,7 @@ AUTH_USER_MODEL = 'users.User'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Etc/GMT-1'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 

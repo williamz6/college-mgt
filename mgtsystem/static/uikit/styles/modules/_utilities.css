@@ -1,14 +1,15 @@
 .container {
-  width: 92%;
-  max-width: 165rem;
-  margin: 0 auto;
-  box-sizing: border-box;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-.container--narrow {
+/* .container--narrow {
   width: 92%;
   max-width: 120rem;
-}
+} */
 
 @media screen and (min-width: 1000px) {
   .container {

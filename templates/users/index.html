@@ -1,7 +1,62 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content  %}
-<div>
+
+<main class="index__page">
+  <section class="index__bg">
+    
+  </section>
+  <div style="max-width:100%; margin-top: -7em; margin-left: 5em; z-index: 1; height: 200px; width: 727px; background: #322f41; padding: 3rem; ">
+    <div  style="display: flex; justify-content: space-between; flex-direction: column;">
+      
+      <h1 style="font-weight: bold; color: #fff; font-size: 40px; ">School Of the People</h1>
+      <p style="margin-top: 5px; margin-bottom: 5px;"><span style="color: #fff;">Your education doesn’t end at graduation.<br>SOP offers programs & resources
+      to alumni at every phase of your career</span></p>
+      <a href="http://" target="_blank" rel="noopener noreferrer">Learn More &nbsp;<span style="color: #fff;"><i class="  fa-solid fa-arrow-right-from-bracket "></i></span></a>
+    </div>
+    
+  </div>
+
+  <section class="addPage" style="margin-top: 3em;">
+    <div class="container">
+      <div class="row" style="display: flex; justify-content:space-around; gap: 6.5rem;">
+        <div class="col-md-6">
+        <div class="card" style="min-height: 100%; margin: 0 auto; padding: 4rem; box-shadow: 0 10px 20px rgb(0 0 0 / 5%), 0 6px 6px rgb(0 0 0 / 5%);">
+          <div class="card-body">
+            <a href="{% url 'register-teacher' %}">
+              <img style=" display: block; margin: 0 auto; width:300px;" src="{% static 'images/addteacher.png' %}" alt="">
+
+           <h5 style="text-align: center; font-weight: bold; margin-top: 1rem;">Add Teacher</h5>
+            <p>Enter the details of new faculty to add a new teacher
+              to database. Make sure to correctly input values.</p>
+            </a>
+            
+          </div>
+           
+          </div>
+        </div>
+        <div class="col-md-6">
+          
+        <div class="card" style="min-height: 100%; margin: 0 auto;  padding: 4rem; box-shadow: 0 10px 20px rgb(0 0 0 / 5%), 0 6px 6px rgb(0 0 0 / 5%);">
+          <div class="card-body">
+            <a href="{% url 'register-student' %}">
+              <img style=" display: block; margin: 0 auto; width:300px;" src="{% static 'images/addstudent.png' %}" alt="">
+
+           <h5 style="text-align: center; font-weight: bold; margin-top: 1rem;">Add Student</h5>
+            <p>Enter the details of a student to enroll a new student. 
+              Fill the details carefully as they are important for academics.</p>
+            </a>
+            
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+</main>
+
+<!-- <div>
   
   <div>
     <table class="table table-responsive table-hover">
@@ -35,5 +90,5 @@
   </div>
     
     
-</div>
+</div> -->
 {% endblock %}

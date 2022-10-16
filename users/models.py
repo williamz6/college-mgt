@@ -1,18 +1,14 @@
-from ipaddress import v4_int_to_packed
-from re import L
-from unicodedata import name
-from unittest import expectedFailure
+from distutils.log import error
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import date, datetime, timedelta
-from shortuuid.django_fields import ShortUUIDField
-from courses.models import Dept, Course, Class, College
-from django.dispatch import receiver
-from django.db.models.signals import post_save,post_delete
-from django.core.exceptions import ValidationError
+from datetime import  datetime, timedelta
+from courses.models import Dept, Course, Class
 import datetime
 import math
+import uuid
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save,post_delete, pre_save
+
 year = datetime.datetime.now()
 year = year.strftime('%y')
 col_name = 'TCH'
@@ -43,6 +39,9 @@ test_name = (
     ('CAT 3', 'CAT 3'),
     ('SEMESTER EXAM', 'SEMESTER EXAM'),
 )
+
+
+
 def science_college():
     name = Dept.objects.filter(college__name = 'Sciences')
     if name:
@@ -52,6 +51,13 @@ def science_college():
     
 def ids():
     no = Teacher.objects.count()
+    if no == None:
+        return 1
+    else:
+        return no + 1
+
+def student_ids():
+    no = Student.objects.count()
     if no == None:
         return 1
     else:
@@ -81,20 +87,20 @@ class Teacher(models.Model):
     id = models.CharField(primary_key=True, editable=False, max_length=30)
     
 
-    def __str__(self):
-        return f'{self.name} : {self.dept.college}'
+    def __str__(self): 
+        return f'{self.name} - {self.dept} '
     
     @property
     def getCollege(self):
         try:
             college = self.dept.college
+            
+            
         except:
             college= ' '
         
         return college
     
-    
-
     def save(self, **kwargs):
         sciences = 'Sciences'
         law = 'Law'
@@ -115,72 +121,107 @@ class Teacher(models.Model):
         
 
         if not self.id:
+            
             self.id = f'{self.col}/{col_name.upper()}{col_num}/{str(self.staff_no).zfill(3)}'
         super().save(**kwargs)
 
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    class_id=models.ForeignKey(Class, on_delete=models.CASCADE, null=True, blank=True, default=1)
-    name = models.CharField(max_length=100)
-    
-    sex= models.CharField(max_length=50, choices=SEX_TYPE)
-    DOB=models.DateField(default="1998-01-01")
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, default=1)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    sex= models.CharField(max_length=50, choices=SEX_TYPE, null=True, blank=True)
+    DOB=models.DateField(default="1998-01-01", null=True, blank=True)
+    SID=models.CharField(('STUDENT_ID'), max_length=30, default=student_ids, unique=True, editable=False)
+    col = models.CharField(max_length=50, null=True, blank=True, default=science_college)
     created = models.DateTimeField(auto_now_add=True)
-    
-    
     def __str__(self):
         return self.name
     @property
-    def check_status(self):
-        if self.user.is_student:
-            print('is student')
-        else:
-            print('not student')
-    # def save(self, *args, **kwargs):
-    #     username = self.user
-    #     try:
-    #         User.objects.get(username=username)
-    #     except User.DoesNotExist:
-    #         super(Student, self).save(*args, **kwargs)
-    #     raise ValidationError("A user with that username already exists!!.")
+    def getStudent(self):
+        try:
+            college = self.class_id.dept.college
+           
+        except:
+            college = ''
+        return college
 
+
+    
+    @property
+    def get_class_id(self):
+        try:
+            college_obj = self.class_id.dept.college.id
+        except:
+            college_obj= ''
+        return college_obj
+
+   
+
+    
+    def save(self, **kwargs):
+        sciences = 'Sciences'
+        law = 'Law'
+        medicine= 'Medicine'
+        engineering = 'Engineering'
+        sms= 'Social and Management Sciences'
+        if self.getStudent.name == sciences:
+            self.col = f'SCI'
+        elif self.getStudent.name == law:
+            self.col = f'LAW'
+        elif self.getStudent.name == medicine:
+            self.col = f'MHS'
+        elif self.getStudent.name == engineering:
+            self.col = f'ENG'
+        elif self.name == sms:
+            self.col = f'SMS'
+        
+
+        if self.id:
+            year = datetime.datetime.now()
+            year = year.strftime('%y')
+            self.SID = f'{year}{self.col.upper()}{str(self.SID).zfill(3)}'
+        super().save(**kwargs)
+
+
+
+ 
+   
 class Assign(models.Model):
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     course= models.ForeignKey(Course, on_delete=models.CASCADE)
     teacher= models.ForeignKey(Teacher, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together= [['class_id', 'course', 'teacher']]
+        unique_together= (('course', 'class_id', 'teacher'),)
 
     def __str__(self):
         cl= Class.objects.get(id=self.class_id_id)
         cr= Course.objects.get(id=self.course_id)
         te= Teacher.objects.get(id=self.teacher_id)
-        return f'{te.name}:{cr.shortname}:{cl}'
+        return f'{te.name}:{cr.name}:{cl}'
 
 class AssignTime(models.Model):
     assign = models.ForeignKey(Assign, on_delete=models.CASCADE)
-    period = models.CharField(max_length=50, choices=time_slots, default='7:30 - 8:30')
-    day=models.CharField(max_length=15, choices=DAYS_OF_WEEK)
+    period = models.CharField(max_length=50, choices=time_slots, default='11:00 - 11:50')
+    day = models.CharField(max_length=15, choices=DAYS_OF_WEEK)
 
 class AttendanceClass(models.Model):
     assign=models.ForeignKey(Assign, on_delete=models.CASCADE)
     date = models.DateField()
-    status= models.BooleanField(default=False)
+    status= models.IntegerField(default=0)
 
     class Meta:
         verbose_name = 'Attendance'
         verbose_name_plural = 'Attendance'
-    def __str__(self):
-        return f'{self.assign}'
 
 class Attendance(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     attendanceclass = models.ForeignKey(AttendanceClass, on_delete=models.CASCADE)
-    date = models.DateField(max_length=30,  default='2022-07-11')
-    status= models.BooleanField(default=False)
+    date = models.DateField(default='2022-07-11')
+    status= models.BooleanField(default='True')
 
     def __str__(self):
         return f' {self.student} : {self.course}'
@@ -190,7 +231,7 @@ class AttendanceTotal(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (('course', 'student'))
+        unique_together = (('student', 'course'))
 
     @property
     def attendance_class(self):
@@ -211,12 +252,12 @@ class AttendanceTotal(models.Model):
         if self.total_class == 0:
             attendance = 0
         else:
-            attendance = round((self.attendance_class / self.total_class) * 100,2)
+            attendance = round((self.attendance_class / self.total_class) * 100, 2)
         return attendance
     
     @property
     def classes_to_attend(self):
-        cta = math.ceil((0.75 * (self.total_class - self.attendance_class)) / 0.25)
+        cta = self.total_class - self.attendance_class
         if cta < 0 :
             return 0
         return cta
@@ -226,12 +267,13 @@ class StudentCourse(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
      
     class Meta:
+        unique_together = (('student', 'course'),)
         verbose_name_plural = 'Marks'
-        unique_together = (('student', 'course'))
+        
     def __str__(self):
         student_obj = Student.objects.get(name=self.student)
         course_obj = Course.objects.get(name=self.course)
-        return  f'{student_obj.name} : {course_obj.shortname}'
+        return  f'{student_obj.name} : {course_obj.name}'
     # cat means Continuous Assessment Test
     def get_cat(self):
         mark_list= self.marks.set_all()
@@ -250,8 +292,9 @@ class Marks(models.Model):
     name = models.CharField(max_length=50, choices=test_name, default='CAT 1')
     score = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
-    unique_together= [['studentcourse', 'name' ]]
+    unique_together= (('studentcourse', 'name' ),)
 
+    @property
     def total_marks(self):
         if self.name == 'Semeseter Exams':
             return 100
@@ -260,22 +303,29 @@ class Marks(models.Model):
 class MarksClass(models.Model):
     assign=models.ForeignKey(Assign, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, choices=test_name, default='CAT 1')
-    status=models.BooleanField(default=False)
+    status=models.BooleanField(default='False')
 
-    unique_together = [['assign', 'name']]
+    class Meta:
+        unique_together = (('assign', 'name'),)
+
+    @property
     def total_marks(self):
         if self.name == 'Semeseter Exams':
             return 100
         return 20
 
 class AttendanceRange(models.Model):
-    start_date = models.DateField()
-    end_date = models.DateField()
-    
-@property
+    start_date = models.DateField(default='2022-10-17')
+    end_date = models.DateField(default='2022-10-19')
+
+
+# Triggers
+
+
 def daterange(start_date, end_date):
-    for n in range(int(end_date - start_date).days):
+    for n in range(int((end_date - start_date).days)):
         yield start_date + timedelta(n)
+
 
 days = {
     'Monday': 1,
@@ -286,66 +336,71 @@ days = {
     'Saturday': 6,
 }
 
-# def create_attendance(sender, instance, created, **kwargs):
-#     if created:
-#         start_date = AttendanceRange.objects.all()[:1].get().start_date
-#         end_date = AttendanceRange.objects.all()[:1].get().end_date
-#         for single_date in range(start_date, end_date):
-#             if single_date.isoweekday() == days[instance.day]:
-#                 try:
-#                     AttendanceClass.objects.get(date=single_date.strftime("%Y-%m-%d"), assign = instance.assign)
-#                 except AttendanceClass.DoesNotExist:
-#                     a = AttendanceClass(date=single_date.strftime("%Y-%m-%d"), assign = instance.assign)
-#                     a.save()
 
-# def create_marks(sender, instance, created, **kwargs):
-#     if created:
-#         if hasattr(instance, 'name'):
-#             ass_list = instance.class_id.assign_set.all()
-#             for ass in ass_list:
-#                 try:
-#                     StudentCourse.objects.get(student=instance, course=ass.course)
-#                 except StudentCourse.DoesNotExist:
-#                     sc=StudentCourse(student=instance, course=ass.course)
-#                     sc.save()
-#                     sc.marks_set.create(name='CAT 1')
-#                     sc.marks_set.create(name='CAT 2')
-#                     sc.marks_set.create(name='CAT 3')
-#                     sc.marks_set.create(name='SEMESTER EXAM')
+def create_attendance(sender, instance, **kwargs):
+        print(f'{AttendanceRange}')
+        start_date = AttendanceRange.objects.all()[:1].get().start_date
+        print(f'start date is {start_date}')
+        end_date = AttendanceRange.objects.all()[:1].get().end_date
+        print(f'end date is {end_date}')
+        for single_date in daterange(start_date, end_date):
+            if single_date.isoweekday() == days[instance.day]:
+                try:
+                    AttendanceClass.objects.get(date=single_date.strftime("%Y-%m-%d"), assign=instance.assign)
+                except AttendanceClass.DoesNotExist:
+                    a = AttendanceClass(date=single_date.strftime("%Y-%m-%d"), assign=instance.assign)
+                    a.save()
 
-#         elif hasattr(instance, 'course'):
-#             student_list = instance.class_id.student_set.all()
-#             cr = instance.course 
-#             for s in student_list:
-#                 try:
-#                     StudentCourse.objects.get(student=s, course=cr)   
-#                 except StudentCourse.DoesNotExist:
-#                     sc = StudentCourse(student=s, course=cr)
-#                     sc.save()
-#                     sc.marks_set.create(name='CAT 1')
-#                     sc.marks_set.create(name='CAT 2')
-#                     sc.marks_set.create(name='CAT 3')
-#                     sc.marks_set.create('SEMESTER EXAM')
-
-# def create_marks_class(sender, instance, created, **kwargs):
-#     if created:
-#         for name in test_name:
-#             try:
-#                 MarksClass.objects.get(assign=instance, name=name[0])
-#             except MarksClass.DoesNotExist:
-#                 m = MarksClass(assign=instance, name=name[0])
-#                 m.save()
+def create_marks(sender, instance, **kwargs):
+    if kwargs['created']:
+        if hasattr(instance, 'name'):
+            ass_list = instance.class_id.assign_set.all()
+            for ass in ass_list:
+                try:
+                    StudentCourse.objects.get(student=instance, course=ass.course)
+                except StudentCourse.DoesNotExist:
+                    sc = StudentCourse(student=instance, course=ass.course)
+                    sc.save()
+                    sc.marks_set.create(name='Internal test 1')
+                    sc.marks_set.create(name='Internal test 2')
+                    sc.marks_set.create(name='Internal test 3')
+                    sc.marks_set.create(name='Event 1')
+                    sc.marks_set.create(name='Event 2')
+                    sc.marks_set.create(name='Semester End Exam')
+        elif hasattr(instance, 'course'):
+            stud_list = instance.class_id.student_set.all()
+            cr = instance.course
+            for s in stud_list:
+                try:
+                    StudentCourse.objects.get(student=s, course=cr)
+                except StudentCourse.DoesNotExist:
+                    sc = StudentCourse(student=s, course=cr)
+                    sc.save()
+                    sc.marks_set.create(name='Internal test 1')
+                    sc.marks_set.create(name='Internal test 2')
+                    sc.marks_set.create(name='Internal test 3')
+                    sc.marks_set.create(name='Event 1')
+                    sc.marks_set.create(name='Event 2')
+                    sc.marks_set.create(name='Semester End Exam')
 
 
-# def delete_marks(sender, instance, **kwargs):
-#     try:
-#         student_list=  instance.class_id.student_set.all()
-#         StudentCourse.objects.filter(course=instance.course, student__in= student_list).delete()
-#     except StudentCourse.DoesNotExist:
-#         student_list =  None
+def create_marks_class(sender, instance, **kwargs):
+    if kwargs['created']:
+        for name in test_name:
+            try:
+                MarksClass.objects.get(assign=instance, name=name[0])
+            except MarksClass.DoesNotExist:
+                m = MarksClass(assign=instance, name=name[0])
+                m.save()
 
-# post_save.connect(create_marks, sender=Student)
-# post_save.connect(create_marks, sender=Assign)
-# post_save.connect(create_marks_class, sender=Assign)
-# post_save.connect(create_attendance, sender=AssignTime)
-# post_delete.connect(delete_marks, sender=Assign)
+
+def delete_marks(sender, instance, **kwargs):
+    stud_list = instance.class_id.student_set.all()
+    StudentCourse.objects.filter(course=instance.course, student__in=stud_list).delete()
+
+
+post_save.connect(create_marks, sender=Student)
+post_save.connect(create_marks, sender=Assign)
+post_save.connect(create_marks_class, sender=Assign)
+post_save.connect(create_attendance, sender=AssignTime)
+post_delete.connect(delete_marks, sender=Assign)

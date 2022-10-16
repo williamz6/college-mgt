@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="card table-responsive">
+                <div class="card-header font-weight-bold">
+                    {{course_obj.name}}
+                </div>
+                
+                
+                <div class="card-body">
+                    <form action="{% url 'confirm' att_class.id   %}" method="post">
+                        {% csrf_token %}
+                    <table class="table table-bordered ">
+                        <thead>
+                          <tr>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Action</th>
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for list in att_list  %}
+                            
+                            <tr>
+                                <td>{{list.student.name}}</td>
+                                
+                                <td>
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        
+                                        {% if list.status %}
+                                        <label class="btn btn-outline-success active" >
+                                            <input type="radio" name="{{ list.student.SID }}" id="option1" autocomplete="off" value="present" checked>
+                                            Present</label>
+
+                                            <label class="btn btn-outline-danger"> 
+                                                <input type="radio" name="{{ list.student.SID }}" id="option2" autocomplete="off" value="absent">
+                                                 Absent
+                                            </label>
+                                        {% else %}
+                                            <label class="btn btn-outline-success " >
+                                            <input type="radio" name="{{ list.student.SID }}" id="option1" autocomplete="off" value="present">
+                                            Present
+                                            </label>
+
+                                            <label class="btn btn-outline-danger active"> 
+                                                <input type="radio" name="{{ list.student.SID }}" id="option2" autocomplete="off" value="absent" checked>
+                                                 Absent
+                                            </label>
+                                        {% endif %}
+                                            
+                                    </div>
+                                </td>
+                                
+                                
+                            </tr>
+                            {% endfor %}               
+                          
+                        </tbody>
+                      </table>
+
+                      <div>
+                        <input class="btn btn--sub" type="submit" value="Submit">
+                      </div>
+                    </form>
+                </div>
+                
+            </div>
+            
+        </div>
+    </section>
+{% endblock %}
+    

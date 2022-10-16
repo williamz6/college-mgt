@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header font-weight-bold">{{ass.course}}</div>
+            <div class="card-body">
+                <table class="table table-bordered " style="width: 100%!important;">
+                    <thead>
+                      <tr style="text-align: center;">
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" style="width: 30%!important;">Action</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for a in attendance_list  %}
+                        
+                        <tr>
+                            <td>{{a.date}}</td>
+                            
+                            {% if a.status == False %}
+                                <td class="bg-danger text-white">Not Marked</td>
+                                <td style="display: flex; justify-content: space-around;">
+                                    <a href="{% url 'teacher_attendance' a.id %}" class="btn btn--sm">Enter Attendance</a>
+                                    <a href="" class="btn btn--sm">Cancel class</a>
+                                </td>
+                            {% elif a.status == True %}
+                            <td class="bg-success text-white">
+                                Marked
+                            </td>
+                            <td><a href="{% url 'edit-attendance' a.id %}" class="btn btn--sm">Edit Attendance</a></td>
+                            {% else %}
+                            <td>Cancelled</td>
+                            <td><a href="" class="btn btn--sm">Edit Attendance</a></td>
+                            {% endif %}
+                                
+                            
+                            
+                        </tr>
+                        {% endfor %}               
+                      
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+    
